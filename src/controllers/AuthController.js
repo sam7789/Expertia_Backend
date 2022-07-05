@@ -23,9 +23,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.body.email }).populate({
-      path: "cart.items.productId",
-    });
+    let user = await User.findOne({ email: req.body.email });
 
     if (!user) {
       return res.status(400).send({ message: "Wrong Email or Password" });
