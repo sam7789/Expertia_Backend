@@ -3,29 +3,46 @@ const router = express.Router();
 const Job = require("../models/jobSchema");
 const Company = require("../models/companySchema");
 const User = require("../models/userSchema");
-const ApiFeatures = require("../utils/apiFeatures");
 const authenticate = require("../middlewares/Authenticate");
 
 router.get("/", async (req, res) => {
+  const page = req.params.page || 1;
+  const limit = req.params.limit || 5;
+  const search = req.query.q || "";
+  const sortBy = req.query.sortBy || "createdAt";
+  const sortOrder = req.query.sortOrder || "asc";
   try {
-    const resultsPerPage = 10 || req.params.resultsPerPage;
-    let Api = new ApiFeatures(Job.find(), req.query)
-      .search()
-      .sort()
-      .paginate(resultsPerPage);
-    let jobs = await Api.query
+    let option = {};
+    if (search !== "") {
+      option = { title: { $regex: search, $options: "i" } };
+    }
+    let order;
+
+    if (sortOrder === "asc") {
+      order = 1;
+    } else {
+      order = -1;
+    }
+    let sort = {
+      [sortBy]: order,
+    };
+    const jobs = await Job.find(option)
+      .skip((page - 1) * limit)
+      .limit(limit)
       .populate({
         path: "company",
-        ref: "Company",
         select: "name",
       })
       .populate({
         path: "techStack",
         ref: "Tech",
         select: "name",
-      });
+      })
+      .sort(sort);
 
-    return res.status(200).json({ jobs });
+    const total = await Job.find(option).countDocuments();
+
+    return res.status(200).json({ jobs, total });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
