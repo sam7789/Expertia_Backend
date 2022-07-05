@@ -7,7 +7,7 @@ class ApiFeatures {
   search() {
     const keyword = this.queryStr.keyword
       ? {
-          name: {
+          title: {
             $regex: this.queryStr.keyword,
             $options: "i",
           },
@@ -28,7 +28,7 @@ class ApiFeatures {
     return this;
   }
   sort() {
-    const sortBy = this.queryStr.sortBy || "name";
+    const sortBy = this.queryStr.sortBy || "createdAt";
     const sortOrder = this.queryStr.sortOrder || "asc";
     this.query = this.query.sort([[sortBy, sortOrder]]);
     return this;
