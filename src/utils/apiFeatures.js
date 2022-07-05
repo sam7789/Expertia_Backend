@@ -8,7 +8,7 @@ class ApiFeatures {
     const keyword = this.queryStr.q
       ? {
           title: {
-            $regex: this.queryStr.keyword,
+            $regex: this.queryStr.q,
             $options: "i",
           },
         }
