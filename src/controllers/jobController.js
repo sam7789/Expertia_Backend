@@ -54,6 +54,26 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id)
+      .populate({
+        path: "company",
+        ref: "Company",
+        select: "name",
+      })
+      .populate({
+        path: "techStack",
+        ref: "Tech",
+        select: "name",
+      });
+
+    return res.status(200).json({ job });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+});
+
 router.patch("/update/:id", async (req, res) => {
   try {
     let job = await Job.findByIdAndUpdate(req.params.id, req.body, {
