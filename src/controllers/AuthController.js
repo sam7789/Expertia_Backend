@@ -43,4 +43,15 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const token = async (req, res) => {
+  // check token
+  try {
+    const userToken = req.header("Authorization").replace("Bearer ", ""); // get token
+    const user = jwt.verify(userToken, process.env.KEY); // verify token
+    return res.status(200).send({ user, token }); // return user
+  } catch (e) {
+    return res.status(500).send({ message: e.message }); // return error
+  }
+};
+
+module.exports = { register, login, token };
