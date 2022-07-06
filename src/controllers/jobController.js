@@ -40,7 +40,8 @@ router.get("/", async (req, res) => {
       })
       .sort(sort);
 
-    const total = await Job.find(option).countDocuments();
+    const totaldocument = await Job.find(option).countDocuments();
+    const total = Math.ceil(totaldocument / limit);
 
     return res.status(200).json({ jobs, total });
   } catch (err) {
