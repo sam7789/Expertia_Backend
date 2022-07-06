@@ -6,8 +6,8 @@ const User = require("../models/userSchema");
 const authenticate = require("../middlewares/Authenticate");
 
 router.get("/", async (req, res) => {
-  const page = req.params.page || 1;
-  const limit = req.params.limit || 5;
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 5;
   const search = req.query.q || "";
   const sortBy = req.query.sortBy || "createdAt";
   const sortOrder = req.query.sortOrder || "asc";
